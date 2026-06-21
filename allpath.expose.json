@@ -1,0 +1,231 @@
+{
+  "$schema": "https://allpath-runner.dev/schema/v1.json",
+  "name": "smcu-protocol",
+  "version": "1.0.0",
+  "language": "python",
+  "entry_point": "main.py",
+  "description": {
+    "fr": "Système de Mémoire Collective Universelle — Protocole ouvert de partage de règles et d'erreurs entre agents IA. Une erreur documentée une fois, évitée par tous.",
+    "en": "Universal Collective Memory System — Open protocol for sharing rules and errors between AI agents. One documented error, avoided by all."
+  },
+  "functions": [
+    {
+      "name": "validate_entry",
+      "description": {
+        "fr": "Valide une entrée SMCU selon le schéma officiel v1.0",
+        "en": "Validates an SMCU entry against the official v1.0 schema"
+      },
+      "params": [
+        {
+          "name": "entry_json",
+          "type": "string",
+          "description": {
+            "fr": "Entrée SMCU sérialisée en JSON",
+            "en": "SMCU entry serialized as JSON string"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": {
+          "fr": "{ valid: bool, errors: [], warnings: [], entry_id: string }",
+          "en": "{ valid: bool, errors: [], warnings: [], entry_id: string }"
+        }
+      }
+    },
+    {
+      "name": "compute_confidence",
+      "description": {
+        "fr": "Calcule le score de confiance selon la formule officielle SMCU",
+        "en": "Computes the confidence score using the official SMCU formula"
+      },
+      "params": [
+        {
+          "name": "votes_positifs",
+          "type": "integer",
+          "description": {
+            "fr": "Nombre de votes positifs",
+            "en": "Number of positive votes"
+          }
+        },
+        {
+          "name": "votes_total",
+          "type": "integer",
+          "description": {
+            "fr": "Nombre total de votes",
+            "en": "Total number of votes"
+          }
+        },
+        {
+          "name": "nb_utilisations",
+          "type": "integer",
+          "description": {
+            "fr": "Nombre de fois que la règle a été utilisée",
+            "en": "Number of times the rule was used"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": {
+          "fr": "{ score: float, formula: string, ... }",
+          "en": "{ score: float, formula: string, ... }"
+        }
+      }
+    },
+    {
+      "name": "generate_id",
+      "description": {
+        "fr": "Génère un identifiant unique SMCU pour une nouvelle entrée",
+        "en": "Generates a unique SMCU identifier for a new entry"
+      },
+      "params": [
+        {
+          "name": "domaine",
+          "type": "string",
+          "description": {
+            "fr": "Domaine de l'entrée (ex: 'médecine')",
+            "en": "Entry domain (e.g. 'medicine')"
+          }
+        },
+        {
+          "name": "type_entree",
+          "type": "string",
+          "description": {
+            "fr": "Type: erreur | regle | avertissement | bonne_pratique",
+            "en": "Type: erreur | regle | avertissement | bonne_pratique"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": {
+          "fr": "{ id: string, domaine: string, type: string }",
+          "en": "{ id: string, domaine: string, type: string }"
+        }
+      }
+    },
+    {
+      "name": "check_contradictions",
+      "description": {
+        "fr": "Vérifie si une entrée contredit des règles existantes",
+        "en": "Checks if an entry contradicts existing rules"
+      },
+      "params": [
+        {
+          "name": "entry_json",
+          "type": "string",
+          "description": {
+            "fr": "Entrée SMCU à vérifier",
+            "en": "SMCU entry to check"
+          }
+        },
+        {
+          "name": "existing_ids_json",
+          "type": "string",
+          "description": {
+            "fr": "Liste JSON des IDs existants dans le registre",
+            "en": "JSON list of existing IDs in the registry"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": {
+          "fr": "{ has_contradictions: bool, declared: [], recommendation: string }",
+          "en": "{ has_contradictions: bool, declared: [], recommendation: string }"
+        }
+      }
+    },
+    {
+      "name": "query_registry",
+      "description": {
+        "fr": "Interroge le registre local pour les règles correspondant à un domaine et des tags. Retourne les entrées actives avec confiance >= 40, triées par score décroissant.",
+        "en": "Queries the local registry for rules matching a domain and tags. Returns active entries with confidence >= 40, sorted by score descending."
+      },
+      "params": [
+        {
+          "name": "domaine",
+          "type": "string",
+          "description": {
+            "fr": "Domaine à interroger (ex: 'médecine')",
+            "en": "Domain to query (e.g. 'médecine')"
+          }
+        },
+        {
+          "name": "tags_json",
+          "type": "string",
+          "description": {
+            "fr": "Tableau JSON de tags (ex: '[\"jwt\",\"securite\"]')",
+            "en": "JSON array of tags (e.g. '[\"jwt\",\"security\"]')"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": {
+          "fr": "{ rules: [], total: int, domain: str, tags: [], injected_at: str }",
+          "en": "{ rules: [], total: int, domain: str, tags: [], injected_at: str }"
+        }
+      }
+    },
+    {
+      "name": "submit_pr",
+      "description": {
+        "fr": "Soumet une entrée SMCU validée comme Pull Request vers le registre central. Nécessite GITHUB_TOKEN et GITHUB_USERNAME dans .smcu.env. Passe --dry-run pour simuler sans créer de PR.",
+        "en": "Submits a validated SMCU entry as a Pull Request to the central registry. Requires GITHUB_TOKEN and GITHUB_USERNAME in .smcu.env. Pass --dry-run to simulate without creating a PR."
+      },
+      "params": [
+        {
+          "name": "entry_json",
+          "type": "string",
+          "description": {
+            "fr": "Entrée SMCU sérialisée en JSON (doit passer validate_entry d'abord)",
+            "en": "SMCU entry serialized as JSON string (must pass validate_entry first)"
+          }
+        },
+        {
+          "name": "flags",
+          "type": "string",
+          "description": {
+            "fr": "Optionnel: --dry-run pour simuler sans créer de PR",
+            "en": "Optional: --dry-run to simulate without creating a PR"
+          }
+        }
+      ],
+      "returns": {
+        "type": "object",
+        "description": {
+          "fr": "{ ok: bool, pr_url: string|null, branch: string, file: string, entry_id: string, errors: [] }",
+          "en": "{ ok: bool, pr_url: string|null, branch: string, file: string, entry_id: string, errors: [] }"
+        }
+      }
+    }
+  ],
+  "dependencies": {
+    "runtime": [
+      "python3>=3.8"
+    ],
+    "packages": []
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Daouda Abdoul Anzize",
+    "email": "anzize.contact@proton.me",
+    "url": "https://github.com/Tryboy869"
+  },
+  "repository": "https://github.com/Tryboy869/smcu-protocol",
+  "homepage": "https://smcu.io",
+  "tags": [
+    "ai",
+    "protocol",
+    "collective-memory",
+    "knowledge-sharing",
+    "open-standard",
+    "mycelium",
+    "multi-agent",
+    "allpath-runner",
+    "autonomous-contribution",
+    "github-pr"
+  ]
+}
