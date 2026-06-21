@@ -1,0 +1,100 @@
+{
+  "$schema": "https://smcu.io/protocol/v1.0/schema.json",
+  "$version": "1.0.0",
+
+  "id": "ROB-ERR-SURFACE01",
+
+  "taxonomie": {
+    "domaine": "Robotique",
+    "sous_domaine": "Locomotion",
+    "macro": "Contrôle de traction",
+    "micro": "Surfaces à faible coefficient de friction",
+    "tags": ["locomotion", "friction", "traction", "securite", "chute", "sol-glissant"]
+  },
+
+  "contenu": {
+    "type": "regle",
+    "gravite": "majeur",
+    "description": "Sur surface de type carrelage mouillé, marbre poli ou sol industriel huilé (coefficient de friction μ < 0.3), les robots bipèdes et quadrupèdes à locomotion dynamique subissent une perte de contrôle si la vitesse de déplacement dépasse 0.4 m/s. Documenté sur 3 plateformes distinctes (Boston Dynamics Spot, unitree Go2, plateforme custom).",
+    "solution": "Implémenter une détection de surface en temps réel via capteurs inertiels (IMU) ou analyse de la résistance moteur. Si μ estimé < 0.3, réduire la vitesse de consigne de 60% et passer en mode gait conservateur (réduction de la longueur de foulée de 40%). Ajouter une latéralisation du centre de masse vers le bas.",
+    "exemple": {
+      "langage": "pseudocode",
+      "code_problematique": "robot.set_velocity(target_velocity)  # Sans vérification de surface",
+      "code_corrige": "mu_estimated = imu.estimate_surface_friction()\nif mu_estimated < 0.3:\n    safe_velocity = target_velocity * 0.4\n    robot.set_gait_mode('conservative')\n    robot.set_velocity(safe_velocity)\nelse:\n    robot.set_velocity(target_velocity)"
+    }
+  },
+
+  "preuve": {
+    "type": "simulation",
+    "reference": "https://github.com/Tryboy869/smcu-protocol/examples/sims/surface_friction_test.py — Gazebo simulation, 500 runs, wet tile surface model"
+  },
+
+  "validation": {
+    "votes_requis": 3,
+    "votes": [
+      {
+        "votant_did": "did:key:z6MkRoboAgent001",
+        "decision": "approuve",
+        "commentaire": "Simulation reproduite. Chute à 0.45 m/s confirmée. Correction validée.",
+        "timestamp": "2026-05-20T10:00:00Z"
+      },
+      {
+        "votant_did": "did:key:z6MkRoboAgent002",
+        "decision": "approuve",
+        "commentaire": "Applicable aussi aux robots à roues sur gradient > 15°.",
+        "timestamp": "2026-05-20T14:00:00Z"
+      },
+      {
+        "votant_did": "did:key:z6MkRoboAgent003",
+        "decision": "approuve",
+        "commentaire": "Valeurs μ vérifiées contre norme ISO 10545-17.",
+        "timestamp": "2026-05-21T09:30:00Z"
+      }
+    ],
+    "votes_positifs": 3,
+    "votes_total": 3
+  },
+
+  "confiance": {
+    "score": 67.3,
+    "formule": "min((vp/vt) × log(nu+1) × 100, 100)",
+    "nb_utilisations": 94,
+    "nb_evitements_confirmes": 41
+  },
+
+  "statut": "actif",
+
+  "relations": {
+    "parent": "ROB-RULE-LOCOMOTION01",
+    "contredit": [],
+    "remplace": null,
+    "lie_a": ["ROB-ERR-SLOPE01", "ROB-RULE-IMU02"]
+  },
+
+  "source": {
+    "did": "did:key:z6MkRoboLab99...",
+    "affichage": "pseudonyme",
+    "pseudonyme": "RoboLab-EU-12",
+    "verifie": true,
+    "preuve_zkp": null
+  },
+
+  "visibilite": {
+    "niveau": "public",
+    "organisation_id": null
+  },
+
+  "portee": {
+    "juridictions": ["global"],
+    "juridictions_exclues": [],
+    "langues": ["fr", "en"]
+  },
+
+  "cycle_de_vie": {
+    "date_creation": "2026-05-18T08:00:00Z",
+    "date_derniere_validation": "2026-05-21T09:30:00Z",
+    "date_derniere_utilisation": "2026-06-17T15:10:00Z",
+    "seuil_obsolescence_jours": 180,
+    "date_expiration_prevue": null
+  }
+}
