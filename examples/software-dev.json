@@ -1,0 +1,100 @@
+{
+  "$schema": "https://smcu.io/protocol/v1.0/schema.json",
+  "$version": "1.0.0",
+
+  "id": "DEV-ERR-JWT01",
+
+  "taxonomie": {
+    "domaine": "Développement logiciel",
+    "sous_domaine": "Backend",
+    "macro": "Sécurité des API",
+    "micro": "Gestion des tokens JWT",
+    "tags": ["jwt", "securite", "authentification", "backend", "python", "api"]
+  },
+
+  "contenu": {
+    "type": "erreur",
+    "gravite": "critique",
+    "description": "Utilisation de l'algorithme HS256 sans rotation de clé secrète. Si le secret est compromis, tous les tokens émis restent valides jusqu'à expiration, sans possibilité de révocation immédiate.",
+    "solution": "Utiliser RS256 (asymétrique) avec rotation automatique des clés privées toutes les 24h via un KMS (Key Management Service). En cas de compromission, seule la clé privée doit être révoquée.",
+    "exemple": {
+      "langage": "python",
+      "code_problematique": "import jwt\ntoken = jwt.encode(payload, 'mon_secret_hardcode', algorithm='HS256')",
+      "code_corrige": "from authlib.jose import JsonWebKey, jwt\nprivate_key = kms.get_current_key()\ntoken = jwt.encode({'alg': 'RS256'}, payload, private_key)"
+    }
+  },
+
+  "preuve": {
+    "type": "test_unitaire",
+    "reference": "https://github.com/Tryboy869/smcu-protocol/examples/tests/test_jwt_rotation.py"
+  },
+
+  "validation": {
+    "votes_requis": 3,
+    "votes": [
+      {
+        "votant_did": "did:key:z6MkValidator001",
+        "decision": "approuve",
+        "commentaire": "Reproduit et corrigé avec succès. Test passant.",
+        "timestamp": "2026-06-17T10:05:00Z"
+      },
+      {
+        "votant_did": "did:key:z6MkValidator002",
+        "decision": "approuve",
+        "commentaire": "Correction validée. RS256 + KMS est le standard de l'industrie.",
+        "timestamp": "2026-06-17T11:20:00Z"
+      },
+      {
+        "votant_did": "did:key:z6MkValidator003",
+        "decision": "approuve",
+        "commentaire": null,
+        "timestamp": "2026-06-17T14:00:00Z"
+      }
+    ],
+    "votes_positifs": 3,
+    "votes_total": 3
+  },
+
+  "confiance": {
+    "score": 91.2,
+    "formule": "min((vp/vt) × log(nu+1) × 100, 100)",
+    "nb_utilisations": 847,
+    "nb_evitements_confirmes": 312
+  },
+
+  "statut": "actif",
+
+  "relations": {
+    "parent": "DEV-RULE-SECURITY01",
+    "contredit": [],
+    "remplace": null,
+    "lie_a": ["DEV-ERR-JWT02", "DEV-RULE-JWT05"]
+  },
+
+  "source": {
+    "did": "did:key:z6MkXr9AbC...",
+    "affichage": "pseudonyme",
+    "pseudonyme": "FinTech-EU-447",
+    "verifie": true,
+    "preuve_zkp": null
+  },
+
+  "visibilite": {
+    "niveau": "public",
+    "organisation_id": null
+  },
+
+  "portee": {
+    "juridictions": ["global"],
+    "juridictions_exclues": [],
+    "langues": ["fr", "en"]
+  },
+
+  "cycle_de_vie": {
+    "date_creation": "2026-06-17T09:00:00Z",
+    "date_derniere_validation": "2026-06-17T14:00:00Z",
+    "date_derniere_utilisation": "2026-06-19T08:44:00Z",
+    "seuil_obsolescence_jours": 180,
+    "date_expiration_prevue": null
+  }
+}
