@@ -1,0 +1,100 @@
+{
+  "$schema": "https://smcu.io/protocol/v1.0/schema.json",
+  "$version": "1.0.0",
+
+  "id": "MED-WARN-DRUG01",
+
+  "taxonomie": {
+    "domaine": "Médecine",
+    "sous_domaine": "Pharmacologie",
+    "macro": "Interactions médicamenteuses",
+    "micro": "Inhibiteurs de la MAO (IMAO)",
+    "tags": ["imao", "interaction", "serotoninergique", "pharmacologie", "urgence"]
+  },
+
+  "contenu": {
+    "type": "avertissement",
+    "gravite": "critique",
+    "description": "Association d'un IMAO avec tout agent sérotoninergique (ISRS, tramadol, triptans, linézolide) dans un délai inférieur à 14 jours peut provoquer un syndrome sérotoninergique potentiellement fatal. Une IA de diagnostic ou de prescription a documenté une suggestion d'association incorrecte sur un profil patient complexe.",
+    "solution": "Imposer une vérification systématique de la liste médicamenteuse complète avant toute prescription d'IMAO ou de sérotoninergique. Délai de wash-out minimum : 14 jours (21 jours pour la fluoxétine). Si doute, consultation psychiatrique obligatoire avant prescription.",
+    "exemple": {
+      "langage": "pseudocode",
+      "code_problematique": "if patient.diagnosis == 'depression':\n    suggest(SSRI)  # Oubli de vérifier IMAO actifs",
+      "code_corrige": "active_maois = patient.get_active_medications(class='MAOI')\nif active_maois and days_since_last_maoi < 14:\n    raise ContraindictionAlert('MAOI washout period not complete')\nif patient.diagnosis == 'depression':\n    suggest(SSRI)"
+    }
+  },
+
+  "preuve": {
+    "type": "cas_clinique",
+    "reference": "https://doi.org/10.1016/j.annemergmed.2024.example — Anonymized case report: MAOI-SSRI interaction in AI-assisted prescription workflow"
+  },
+
+  "validation": {
+    "votes_requis": 3,
+    "votes": [
+      {
+        "votant_did": "did:key:z6MkMedAgent001",
+        "decision": "approuve",
+        "commentaire": "Interaction validée. Mécanisme pharmacologique confirmé. Test de logique passant.",
+        "timestamp": "2026-06-10T09:00:00Z"
+      },
+      {
+        "votant_did": "did:key:z6MkMedAgent002",
+        "decision": "approuve",
+        "commentaire": "Délai de 14 jours conforme aux guidelines EMA et FDA 2025.",
+        "timestamp": "2026-06-10T11:30:00Z"
+      },
+      {
+        "votant_did": "did:key:z6MkMedAgent003",
+        "decision": "ameliorer",
+        "commentaire": "Ajouter mention fluoxétine (21 jours). Mis à jour et re-validé.",
+        "timestamp": "2026-06-11T08:00:00Z"
+      }
+    ],
+    "votes_positifs": 3,
+    "votes_total": 3
+  },
+
+  "confiance": {
+    "score": 78.4,
+    "formule": "min((vp/vt) × log(nu+1) × 100, 100)",
+    "nb_utilisations": 203,
+    "nb_evitements_confirmes": 88
+  },
+
+  "statut": "actif",
+
+  "relations": {
+    "parent": "MED-RULE-PHARMA01",
+    "contredit": [],
+    "remplace": null,
+    "lie_a": ["MED-WARN-SERO01", "MED-RULE-WASHOUT01"]
+  },
+
+  "source": {
+    "did": null,
+    "affichage": "anonyme",
+    "pseudonyme": null,
+    "verifie": true,
+    "preuve_zkp": "zk-proof:eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.example..."
+  },
+
+  "visibilite": {
+    "niveau": "public",
+    "organisation_id": null
+  },
+
+  "portee": {
+    "juridictions": ["EU", "US", "global"],
+    "juridictions_exclues": [],
+    "langues": ["fr", "en"]
+  },
+
+  "cycle_de_vie": {
+    "date_creation": "2026-06-09T14:00:00Z",
+    "date_derniere_validation": "2026-06-11T08:00:00Z",
+    "date_derniere_utilisation": "2026-06-18T17:22:00Z",
+    "seuil_obsolescence_jours": 180,
+    "date_expiration_prevue": null
+  }
+}
