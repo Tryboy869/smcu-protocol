@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="480" height="200" viewBox="0 0 480 200"
+     role="img" aria-labelledby="card-title">
+
+  <title id="card-title">Daouda Abdoul Anzize — Creator of SMCU Protocol</title>
+
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+    }
+  </style>
+
+  <defs>
+    <linearGradient id="cardBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#07001C"/>
+      <stop offset="100%" stop-color="#03000F"/>
+    </linearGradient>
+    <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#7C3AED"/>
+      <stop offset="50%"  stop-color="#06B6D4"/>
+      <stop offset="100%" stop-color="#10B981"/>
+    </linearGradient>
+    <filter id="cGlow">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="cGlowSoft">
+      <feGaussianBlur stdDeviation="2" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="avatarClip">
+      <circle cx="68" cy="100" r="46"/>
+    </clipPath>
+  </defs>
+
+  <!-- Card background -->
+  <rect width="480" height="200" rx="10" fill="url(#cardBg)"/>
+
+  <!-- Animated border -->
+  <rect width="480" height="200" rx="10" fill="none"
+        stroke="url(#borderGrad)" stroke-width="1.2" opacity="0.6">
+    <animate attributeName="opacity" values="0.4;0.8;0.4" dur="4s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Subtle grid -->
+  <g opacity="0.04" stroke="#7C3AED" stroke-width="0.5">
+    <line x1="0" y1="50"  x2="480" y2="50"/>
+    <line x1="0" y1="100" x2="480" y2="100"/>
+    <line x1="0" y1="150" x2="480" y2="150"/>
+    <line x1="160" y1="0" x2="160" y2="200"/>
+    <line x1="320" y1="0" x2="320" y2="200"/>
+  </g>
+
+  <!-- ── AVATAR AREA ── -->
+  <!-- Avatar background circle -->
+  <circle cx="68" cy="100" r="46" fill="url(#avatarGrad)" opacity="0.15"/>
+  <circle cx="68" cy="100" r="46" fill="none" stroke="url(#avatarGrad)" stroke-width="1.5" filter="url(#cGlow)">
+    <animate attributeName="stroke-width" values="1.5;2.5;1.5" dur="3s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Pulse ring -->
+  <circle cx="68" cy="100" r="46" fill="none" stroke="#7C3AED" stroke-width="1" opacity="0">
+    <animate attributeName="r"       values="46;68"  dur="3s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0"  dur="3s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Avatar initials -->
+  <text x="68" y="95"
+        font-family="'Courier New',monospace" font-size="22" font-weight="bold"
+        fill="#7C3AED" text-anchor="middle" filter="url(#cGlow)">DA</text>
+  <text x="68" y="115"
+        font-family="'Courier New',monospace" font-size="9"
+        fill="#06B6D4" text-anchor="middle" opacity="0.8">ANZIZE</text>
+
+  <!-- Mini mycelium under avatar -->
+  <line x1="68" y1="148" x2="50" y2="162" stroke="#7C3AED" stroke-width="0.6" opacity="0.4"/>
+  <line x1="68" y1="148" x2="86" y2="162" stroke="#7C3AED" stroke-width="0.6" opacity="0.4"/>
+  <circle cx="50" cy="162" r="2" fill="#06B6D4" opacity="0.5"/>
+  <circle cx="86" cy="162" r="2" fill="#10B981" opacity="0.5"/>
+  <circle cx="68" cy="148" r="3" fill="#7C3AED" filter="url(#cGlowSoft)" opacity="0.6"/>
+
+  <!-- ── INFO SECTION ── -->
+  <!-- Name -->
+  <text x="142" y="62"
+        font-family="'Courier New',monospace" font-size="16" font-weight="bold"
+        fill="#8B5CF6" filter="url(#cGlowSoft)" letter-spacing="1">
+    Daouda Abdoul Anzize
+  </text>
+
+  <!-- Title -->
+  <text x="142" y="82"
+        font-family="'Courier New',monospace" font-size="9.5"
+        fill="#06B6D4" opacity="0.9" letter-spacing="1">
+    Computational Paradigm Designer
+  </text>
+
+  <!-- Separator -->
+  <line x1="142" y1="92" x2="456" y2="92" stroke="#7C3AED" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Info items -->
+  <text x="142" y="110"
+        font-family="'Courier New',monospace" font-size="9" fill="#10B981">📍</text>
+  <text x="162" y="110"
+        font-family="'Courier New',monospace" font-size="9" fill="#94A3B8">Cotonou, Bénin 🌍</text>
+
+  <text x="142" y="126"
+        font-family="'Courier New',monospace" font-size="9" fill="#10B981">✉</text>
+  <text x="162" y="126"
+        font-family="'Courier New',monospace" font-size="9" fill="#94A3B8">anzize.contact@proton.me</text>
+
+  <text x="142" y="142"
+        font-family="'Courier New',monospace" font-size="9" fill="#10B981">⌥</text>
+  <text x="162" y="142"
+        font-family="'Courier New',monospace" font-size="9" fill="#94A3B8">github.com/Tryboy869</text>
+
+  <!-- Separator -->
+  <line x1="142" y1="152" x2="456" y2="152" stroke="#7C3AED" stroke-width="0.5" opacity="0.4"/>
+
+  <!-- Projects tags -->
+  <!-- Tag 1: SMCU -->
+  <rect x="142" y="160" width="90" height="18" rx="3" fill="#3B0764" stroke="#7C3AED" stroke-width="0.5"/>
+  <text x="187" y="173" font-family="'Courier New',monospace" font-size="8"
+        fill="#8B5CF6" text-anchor="middle">SMCU Protocol</text>
+
+  <!-- Tag 2: Allpath -->
+  <rect x="240" y="160" width="90" height="18" rx="3" fill="#03001F" stroke="#06B6D4" stroke-width="0.5"/>
+  <text x="285" y="173" font-family="'Courier New',monospace" font-size="8"
+        fill="#06B6D4" text-anchor="middle">Allpath Runner</text>
+
+  <!-- Tag 3: NGPC -->
+  <rect x="338" y="160" width="70" height="18" rx="3" fill="#001A0A" stroke="#10B981" stroke-width="0.5"/>
+  <text x="373" y="173" font-family="'Courier New',monospace" font-size="8"
+        fill="#10B981" text-anchor="middle">NGPC</text>
+
+  <!-- Bottom quote -->
+  <text x="142" y="195"
+        font-family="'Courier New',monospace" font-size="7.5"
+        fill="#3B0764" opacity="0.9" letter-spacing="0.5">
+    "I don't build apps. I build the clay others use to build apps."
+  </text>
+
+</svg>
