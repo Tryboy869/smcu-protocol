@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://smcu.io/protocol/v1.0/schema.json",
+  "title": "SMCU Entry",
+  "description": "Canonical schema for a SMCU Protocol entry v1.0 — Système de Mémoire Collective Universelle / The Mycelium Protocol",
+  "type": "object",
+
+  "required": [
+    "id", "taxonomie", "contenu", "preuve",
+    "validation", "confiance", "statut",
+    "source", "visibilite", "portee", "cycle_de_vie"
+  ],
+
+  "properties": {
+
+    "$schema":  { "type": "string", "description": "Must point to https://smcu.io/protocol/v1.0/schema.json" },
+    "$version": { "type": "string", "description": "Protocol version (e.g. '1.0.0')" },
+
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z]{2,6}-[A-Z]{2,8}-[A-Z0-9]{4}$",
+      "description": "Unique identifier. Format: DOMAIN_PREFIX-TYPE_SUFFIX-HASH4. Example: DEV-ERR-A3F2",
+      "examples": ["DEV-ERR-A3F2", "MED-WARN-B7C1", "ROB-RULE-F9D4"]
+    },
+
+    "taxonomie": {
+      "type": "object",
+      "required": ["domaine", "sous_domaine", "macro", "micro"],
+      "properties": {
+        "domaine":      { "type": "string", "description": "Top-level domain. Use canonical names from SPECIFICATION.md §7." },
+        "sous_domaine": { "type": "string", "description": "Sub-domain within the domain." },
+        "macro":        { "type": "string", "description": "Macro category (e.g. 'Sécurité des API')." },
+        "micro":        { "type": "string", "description": "Micro category (e.g. 'Gestion des tokens JWT')." },
+        "tags":         { "type": "array", "items": { "type": "string" }, "description": "Searchable lowercase tags. Improves query_registry discoverability." }
+      }
+    },
+
+    "contenu": {
+      "type": "object",
+      "required": ["type", "gravite", "description", "solution"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["erreur", "regle", "avertissement", "bonne_pratique"],
+          "description": "Entry type. See SPECIFICATION.md §3."
+        },
+        "gravite": {
+          "type": "string",
+          "enum": ["critique", "majeur", "mineur"],
+          "description": "Severity level. Affects agent auto-apply threshold."
+        },
+        "description": { "type": "string", "description": "Clear description of the error or rule." },
+        "solution":    { "type": "string", "description": "Concrete correction or best practice." },
+        "exemple": {
+          "type": "object",
+          "description": "Optional but strongly recommended code example.",
+          "properties": {
+            "langage":            { "type": "string", "description": "Language of the code example (python, javascript, pseudocode, etc.)" },
+            "code_problematique": { "type": "string", "description": "Code demonstrating the problem." },
+            "code_corrige":       { "type": "string", "description": "Corrected code." }
+          }
+        }
+      }
+    },
+
+    "preuve": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["test_unitaire", "test_integration", "cas_clinique", "simulation", "peer_review", "audit_securite"],
+          "description": "Type of proof supporting this entry."
+        },
+        "reference": { "type": "string", "description": "Public URL or DOI to the proof artifact." }
+      }
+    },
+
+    "validation": {
+      "type": "object",
+      "required": ["votes_requis", "votes", "votes_positifs", "votes_total"],
+      "properties": {
+        "votes_requis": { "type": "integer", "minimum": 3, "description": "Minimum votes required (always ≥ 3)." },
+        "votes_positifs": { "type": "integer", "minimum": 0 },
+        "votes_total":    { "type": "integer", "minimum": 0 },
+        "votes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["votant_did", "decision", "timestamp"],
+            "properties": {
+              "votant_did":  { "type": ["string", "null"], "description": "DID of the validator agent." },
+              "decision":    { "type": "string", "enum": ["approuve", "rejete", "ameliorer"] },
+              "commentaire": { "type": ["string", "null"] },
+              "timestamp":   { "type": "string", "format": "date-time" }
+            }
+          }
+        }
+      }
+    },
+
+    "confiance": {
+      "type": "object",
+      "required": ["score"],
+      "properties": {
+        "score": {
+          "type": "number", "minimum": 0, "maximum": 100,
+          "description": "Confidence score 0–100. Formula: min((vp/vt) × log(nu+1) × 100, 100)"
+        },
+        "formule":                  { "type": "string", "description": "Human-readable formula string." },
+        "nb_utilisations":          { "type": "integer", "minimum": 0 },
+        "nb_evitements_confirmes":  { "type": "integer", "minimum": 0 }
+      }
+    },
+
+    "statut": {
+      "type": "string",
+      "enum": ["en_attente", "actif", "conteste", "revoque", "obsolete", "archive"],
+      "description": "Lifecycle status. See SPECIFICATION.md §4."
+    },
+
+    "relations": {
+      "type": "object",
+      "properties": {
+        "parent":    { "type": ["string", "null"], "description": "Parent entry ID (enables hierarchy)." },
+        "contredit": { "type": "array", "items": { "type": "string" }, "description": "IDs of entries this one contradicts." },
+        "remplace":  { "type": ["string", "null"], "description": "ID of the entry this one supersedes." },
+        "lie_a":     { "type": "array", "items": { "type": "string" }, "description": "Related entry IDs." }
+      }
+    },
+
+    "source": {
+      "type": "object",
+      "required": ["affichage", "verifie"],
+      "properties": {
+        "did":        { "type": ["string", "null"], "description": "W3C DID of the contributor." },
+        "affichage":  { "type": "string", "enum": ["public", "pseudonyme", "anonyme"] },
+        "pseudonyme": { "type": ["string", "null"], "description": "Required when affichage='pseudonyme'. Format: Sector-Region-Number." },
+        "verifie":    { "type": "boolean", "description": "True if contributor identity is verified by the registry." },
+        "preuve_zkp": { "type": ["string", "null"], "description": "ZKP proof string. Required when affichage='anonyme'." }
+      }
+    },
+
+    "visibilite": {
+      "type": "object",
+      "required": ["niveau"],
+      "properties": {
+        "niveau":          { "type": "string", "enum": ["public", "organisation", "prive"] },
+        "organisation_id": { "type": ["string", "null"], "description": "Required when niveau='organisation'." },
+        "note":            { "type": "string" }
+      }
+    },
+
+    "portee": {
+      "type": "object",
+      "properties": {
+        "juridictions":          { "type": "array", "items": { "type": "string" }, "description": "Applicable jurisdictions. Use ISO 3166-1 alpha-2 or 'global'." },
+        "juridictions_exclues":  { "type": "array", "items": { "type": "string" } },
+        "langues":               { "type": "array", "items": { "type": "string" }, "description": "BCP 47 language codes." }
+      }
+    },
+
+    "cycle_de_vie": {
+      "type": "object",
+      "required": ["date_creation"],
+      "properties": {
+        "date_creation":              { "type": "string", "format": "date-time" },
+        "date_derniere_validation":   { "type": ["string", "null"], "format": "date-time" },
+        "date_derniere_utilisation":  { "type": ["string", "null"], "format": "date-time" },
+        "seuil_obsolescence_jours":   { "type": "integer", "default": 180 },
+        "date_expiration_prevue":     { "type": ["string", "null"] }
+      }
+    }
+  },
+
+  "additionalProperties": false
+}
