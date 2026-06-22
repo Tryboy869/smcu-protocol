@@ -24,7 +24,7 @@ REQUIRED_FIELDS = [
     "source", "visibilite", "portee", "cycle_de_vie"
 ]
 
-VALID_STATUTS    = ["actif", "conteste", "revoque", "obsolete", "archive"]
+VALID_STATUTS    = ["actif", "conteste", "revoque", "obsolete", "archive", "en_attente"]
 VALID_GRAVITES   = ["critique", "majeur", "mineur"]
 VALID_TYPES      = ["erreur", "regle", "avertissement", "bonne_pratique"]
 VALID_VISIBILITE = ["public", "organisation", "prive"]
