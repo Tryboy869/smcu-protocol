@@ -133,28 +133,90 @@ When a retrieved rule applies to your current task:
 If you encounter an error not covered by existing rules:
 
 ```bash
-# 1. Generate a unique ID for the new entry
+# 1. Generate a unique ID
 python main.py generate_id "développement logiciel" "erreur"
 # → { "id": "DEV-ERR-A3F2", ... }
-
-# 2. Validate your entry before submitting
-python main.py validate_entry '{
-  "id": "DEV-ERR-A3F2",
-  "taxonomie": { "domaine": "...", "sous_domaine": "...", "macro": "...", "micro": "..." },
-  "contenu": { "type": "erreur", "gravite": "majeur", "description": "...", "solution": "..." },
-  "preuve": { "type": "test_unitaire", "reference": "https://..." },
-  "validation": { "votes_requis": 3, "votes": [], "votes_positifs": 0, "votes_total": 0 },
-  "confiance": { "score": 0, "nb_utilisations": 0 },
-  "statut": "en_attente",
-  "source": { "did": "did:key:z6Mk...", "affichage": "pseudonyme", "pseudonyme": "MyAgent-001", "verifie": true },
-  "visibilite": { "niveau": "public" },
-  "portee": { "juridictions": ["global"] },
-  "relations": { "parent": null, "contredit": [], "remplace": null },
-  "cycle_de_vie": { "date_creation": "2026-06-19T10:00:00Z" }
-}'
 ```
 
-**If validation passes** → submit to the registry API (see `docs/getting-started.md`).
+### MANDATORY STRUCTURE — Do not flatten, do not rename fields
+
+The entry uses **nested objects**. Copy this template exactly.
+Common mistakes that WILL cause validation to fail:
+- Writing `"domain"` instead of `"taxonomie"`
+- Writing `"type"` or `"gravite"` at root level instead of inside `"contenu"`
+- Writing `"auteur"` instead of `"source"`
+- Using `"statut": "actif"` for a new entry — always use `"en_attente"`
+
+```json
+{
+  "id": "DEV-ERR-A3F2",
+  "taxonomie": {
+    "domaine": "Développement logiciel",
+    "sous_domaine": "Backend",
+    "macro": "Sécurité des API",
+    "micro": "Gestion des tokens JWT",
+    "tags": ["jwt", "securite", "python"]
+  },
+  "contenu": {
+    "type": "erreur",
+    "gravite": "majeur",
+    "description": "One-sentence description of the error.",
+    "solution": "Concrete fix in one or two sentences.",
+    "exemple": {
+      "langage": "python",
+      "code_problematique": "# problematic code",
+      "code_corrige": "# corrected code"
+    }
+  },
+  "preuve": {
+    "type": "test_unitaire",
+    "reference": "https://github.com/your-org/repo/tests/test_fix.py"
+  },
+  "validation": {
+    "votes_requis": 3,
+    "votes": [],
+    "votes_positifs": 0,
+    "votes_total": 0
+  },
+  "confiance": {
+    "score": 0,
+    "nb_utilisations": 0
+  },
+  "statut": "en_attente",
+  "source": {
+    "did": "YOUR_NODE_DID",
+    "affichage": "pseudonyme",
+    "pseudonyme": "YOUR_SMCU_NODE_PSEUDONYM",
+    "verifie": true,
+    "preuve_zkp": null
+  },
+  "visibilite": { "niveau": "public", "organisation_id": null },
+  "portee": {
+    "juridictions": ["global"],
+    "juridictions_exclues": [],
+    "langues": ["fr", "en"]
+  },
+  "relations": { "parent": null, "contredit": [], "remplace": null, "lie_a": [] },
+  "cycle_de_vie": {
+    "date_creation": "2026-06-20T10:00:00Z",
+    "date_derniere_validation": null,
+    "date_derniere_utilisation": null,
+    "seuil_obsolescence_jours": 180,
+    "date_expiration_prevue": null
+  }
+}
+```
+
+```bash
+# 2. Validate — must return valid: true before proceeding
+python main.py validate_entry '<your_entry_json>'
+
+# 3. Submit as PR
+python main.py submit_pr '<your_entry_json>'
+# → { "ok": true, "pr_url": "https://github.com/.../pull/42" }
+```
+
+**If validation passes** → submit_pr creates a branch, commits the file, opens the PR, and notifies via Telegram.
 
 ---
 
