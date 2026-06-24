@@ -76,6 +76,12 @@ function validate(entry) {
       check(Number.isInteger(v.votes_requis) && v.votes_requis >= 3,
             `validation.votes_requis doit être ≥ 3 (actuel : ${v.votes_requis})`);
     }
+    // Only check vote count when statut is 'actif'
+    if (entry.statut === "actif" && "votes_requis" in v && "votes" in v) {
+      if (v.votes.length < v.votes_requis) {
+        errors.push(`Votes insuffisants pour statut 'actif': ${v.votes.length}/${v.votes_requis}`);
+      }
+    }
     if ("votes" in v) {
       v.votes.forEach((vote, i) => {
         check("votant_did" in vote, `vote[${i}].votant_did manquant`);
