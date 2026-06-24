@@ -92,10 +92,16 @@ def validate(entry: dict) -> dict:
         v = entry["validation"]
         for f in REQUIRED_VALIDATION:
             _check(f in v, errors, f"validation.{f} requis")
-        if "votes_requis" in v and "votes" in v:
+        if "votes_requis" in v:
             vr = v["votes_requis"]
             _check(isinstance(vr, int) and vr >= 3, errors,
                    f"validation.votes_requis doit être ≥ 3 (actuel : {vr})")
+        # Only check vote count when statut is 'actif'
+        if entry.get("statut") == "actif" and "votes_requis" in v and "votes" in v:
+            vr = v["votes_requis"]
+            if len(v["votes"]) < vr:
+                errors.append(f"Votes insuffisants pour statut 'actif': {len(v['votes'])}/{vr}")
+        if "votes" in v:
             for i, vote in enumerate(v.get("votes", [])):
                 _check("votant_did" in vote, errors, f"vote[{i}].votant_did manquant")
                 _check("decision" in vote and vote.get("decision") in VALID_DECISIONS, errors,
