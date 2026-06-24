@@ -100,10 +100,18 @@ def validate_entry(entry_json: str) -> None:
     # Validation / votes
     if "validation" in entry:
         v = entry["validation"]
-        if "votes_requis" in v and "votes" in v:
+        # votes_requis must be >= 3 (protocol minimum)
+        if "votes_requis" in v:
+            if not isinstance(v["votes_requis"], int) or v["votes_requis"] < 3:
+                errors.append(
+                    f"votes_requis doit être un entier ≥ 3 (actuel: {v.get('votes_requis')})"
+                )
+        # Only check vote count when statut is 'actif'
+        # New entries (en_attente) legitimately have 0 votes
+        if entry.get("statut") == "actif" and "votes" in v and "votes_requis" in v:
             if len(v["votes"]) < v["votes_requis"]:
                 errors.append(
-                    f"Votes insuffisants : {len(v['votes'])}/{v['votes_requis']} requis"
+                    f"Votes insuffisants pour statut 'actif': {len(v['votes'])}/{v['votes_requis']} requis"
                 )
         if "votes" in v:
             for i, vote in enumerate(v["votes"]):
