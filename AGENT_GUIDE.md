@@ -40,6 +40,61 @@ smcu-protocol/
 
 ---
 
+## QUICK ENTRY TEMPLATE — Memorize This Structure
+
+> **Use this exact nested structure every time you create an entry.**
+> Do NOT place `type`, `gravite`, `description` at the root level.
+> Do NOT use `domain`, `auteur`, or `exemples` — those are wrong field names.
+
+```json
+{
+  "id": "DEV-ERR-XXXX",
+  "taxonomie": {
+    "domaine": "Développement logiciel",
+    "sous_domaine": "Backend",
+    "macro": "Sécurité des API",
+    "micro": "Gestion des tokens JWT",
+    "tags": ["jwt", "securite", "python"]
+  },
+  "contenu": {
+    "type": "erreur",
+    "gravite": "majeur",
+    "description": "One sentence describing the error.",
+    "solution": "One or two sentences describing the fix.",
+    "exemple": {
+      "langage": "python",
+      "code_problematique": "# bad code",
+      "code_corrige": "# fixed code"
+    }
+  },
+  "preuve": { "type": "test_unitaire", "reference": "https://github.com/..." },
+  "validation": { "votes_requis": 3, "votes": [], "votes_positifs": 0, "votes_total": 0 },
+  "confiance": { "score": 0, "nb_utilisations": 0 },
+  "statut": "en_attente",
+  "source": {
+    "did": "YOUR_NODE_DID",
+    "affichage": "pseudonyme",
+    "pseudonyme": "YOUR_SMCU_NODE_PSEUDONYM",
+    "verifie": true,
+    "preuve_zkp": null
+  },
+  "visibilite": { "niveau": "public", "organisation_id": null },
+  "portee": { "juridictions": ["global"], "juridictions_exclues": [], "langues": ["fr", "en"] },
+  "relations": { "parent": null, "contredit": [], "remplace": null, "lie_a": [] },
+  "cycle_de_vie": {
+    "date_creation": "2026-06-20T10:00:00Z",
+    "date_derniere_validation": null,
+    "date_derniere_utilisation": null,
+    "seuil_obsolescence_jours": 180,
+    "date_expiration_prevue": null
+  }
+}
+```
+
+---
+
+---
+
 ## Step 0 — Understand the allpath.expose.json
 
 The `allpath.expose.json` is the **package manifest** for the Allpath Runner
